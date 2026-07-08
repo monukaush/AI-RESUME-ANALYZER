@@ -1,11 +1,11 @@
 
-import { Link } from 'react-router'; // Uses React Router for native seamless page transitions
+import { Link } from 'react-router'; 
 import { ArrowRight, PlayCircle, CheckCircle, Info, Key, Award, Shield } from 'lucide-react';
 
 
 export default function LandingPage() {
   
-  // Re-creating the micro-interaction scroll animations
+  
  
 
   return (
@@ -13,11 +13,10 @@ export default function LandingPage() {
       
       <main className="pt-24">
         
-        {/* Hero Section */}
+       
         <section className="relative px-6 py-16 max-w-7xl mx-auto overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
-            {/* Left Column Content */}
             <div className="lg:col-span-7 space-y-6 relative z-10">
               <div className="inline-flex items-center px-3 py-1 rounded-full bg-[#6cf8bb]/20 text-[#00714d] text-xs font-medium gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#006c49] animate-pulse"></span>
@@ -45,17 +44,17 @@ export default function LandingPage() {
               
             </div>
 
-            {/* Right Column Dashboard Preview */}
+            
             <div className="lg:col-span-5 relative">
               <div className="relative bg-white/80 backdrop-blur-md border border-gray-200/50 rounded-2xl p-6 shadow-sm overflow-hidden">
                 
-                {/* Score Radial Visualizer */}
+                
                 <div className="flex flex-col items-center text-center space-y-4 py-8">
                   <div className="relative w-48 h-48 flex items-center justify-center">
-                    {/* <svg className="w-full h-full transform -rotate-90" viewBox="0 0 192 192">
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 192 192">
                       <circle className="text-gray-200" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" strokeWidth="12"></circle>
                       <circle className="text-[#006c49]" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" strokeWidth="12" strokeDasharray="553" strokeDashoffset="83"></circle>
-                    </svg> */}
+                    </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <span className="text-5xl font-extrabold text-black">85</span>
                       <span className="text-xs font-semibold tracking-wider text-gray-500 uppercase">AI SCORE</span>
@@ -66,7 +65,6 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                {/* Analysis List Snippet */}
                 <div className="space-y-3 mt-4 border-t border-gray-100 pt-6">
                   <div className="flex items-center justify-between p-3 rounded-lg bg-[#f7f9fb]">
                     <div className="flex items-center gap-3">
@@ -85,7 +83,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Floating Badge */}
+             
               <div className="absolute -top-6 -right-6 bg-white p-4 rounded-xl shadow-xl flex items-center gap-3 border border-gray-100 animate-bounce" style={{ animationDuration: '3s' }}>
                 <div className="bg-black p-2 rounded-lg text-white">
                   <ArrowRight className="w-4 h-4 transform -rotate-45" />
@@ -100,7 +98,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Feature Grid Section */}
+        
         <section id="features" className="bg-white py-16 px-6 border-y border-gray-100">
           <div className="max-w-7xl mx-auto">
             <div className="text-center space-y-4 mb-12">
@@ -146,7 +144,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Bento Grid Analysis Preview */}
+        
         <section className="py-16 px-6 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
             
@@ -222,7 +220,6 @@ export default function LandingPage() {
 
       </main>
 
-      {/* Footer */}
       <footer className="w-full py-8 px-6 flex flex-col md:flex-row justify-between items-center bg-[#f7f9fb] border-t border-gray-200/50">
         <div className="flex items-center gap-2 mb-4 md:mb-0">
           <img alt="Logo Small" className="h-8 w-auto rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRzLdfwRTuMfU7mtBRjk5tBfmPgxUBknXXkiiBMe8eK_RsAGjMj1sEDR_eUiRbXt0O6G6BsruQqAMrL3HcyutfKQrXi-XvXyuAPtJV-GySWOcP-6MAsJcrOUhjQ8C6Zawr5iybGwbAKp_gGgnViUvCxlcz89LCazidoSGb7axz9BrgDZi2I9p8nRj-XJPO8g9WN8S6bNQ9Jop3y_7oNSid4bhIRUY31n8pMEh9QkNhZM8b0bA7rKSojA" />
