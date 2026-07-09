@@ -28,7 +28,10 @@ export default function LandingPage() {
               <p className="text-lg text-gray-600 max-w-xl leading-relaxed">
                 Upload your resume and let our AI engine scan for gaps, optimize keywords, and calculate your competitive score in seconds. Get hired faster by top-tier tech companies.
               </p>
-              
+              {/* REMOVE THE OLD /Register LINK AND PASTE YOUR NEW /dashboard LINK HERE: */}
+              <Link to="/dashboard" className="bg-gradient-to-r from-[#10B981] to-[#059669] text-white px-10 py-5 rounded-xl font-bold text-lg hover:scale-105 transition-transform inline-block">
+                Analyze My Resume Now
+              </Link>
               <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
         <Link to="/Register" className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-2.5 rounded-xl font-semibold transition-all active:scale-95 flex items-center justify-center gap-2 shadow-sm text-sm ">
   Get Started Free
