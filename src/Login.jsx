@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 
 function Login({ onLoginSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email && password) {
-      onLoginSuccess();
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      }
+      navigate('/dashboard');
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center p-4 font-sans">
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center p-4 font-sans pt-24">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl border border-gray-100 shadow-sm flex flex-col">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Welcome Back</h1>
@@ -81,7 +86,7 @@ function Login({ onLoginSuccess }) {
         </form>
 
         <p className="text-center text-sm text-gray-500 mt-6">
-          Don't have an account? <a href="#register" className="font-bold text-gray-900 hover:underline">Register</a>
+          Don't have an account? <Link to="/Register" className="font-bold text-gray-900 hover:underline">Register</Link>
         </p>
 
         <div className="flex justify-center gap-6 text-xs text-gray-400 mt-12 pt-6 border-t border-gray-50">

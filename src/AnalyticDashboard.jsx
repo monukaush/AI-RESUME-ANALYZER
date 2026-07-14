@@ -1,23 +1,52 @@
 import React, { useState } from 'react';
+import { ArrowUpRight, CheckCircle, AlertTriangle, HelpCircle, FileText, ArrowRight } from 'lucide-react';
 
 function AnalyticDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const[email, setEmail]  = useState('')
-  const[password, SetPassword] = useState('')
-  const[showPassword, setShowPassword] = useState(false);
-  
+  const [file, setFile] = useState(null);
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanProgress, setScanProgress] = useState(0);
+  const [recentScans, setRecentScans] = useState([
+    { id: 1, name: "Kaushik_Resume_Backend.pdf", date: "2026-07-14", score: 85 },
+    { id: 2, name: "Kaushik_Resume_V2.pdf", date: "2026-07-10", score: 79 }
+  ]);
+
+  const handleFileUpload = (e) => {
+    const uploadedFile = e.target.files?.[0] || { name: 'Uploaded_Resume.pdf' };
+    setFile(uploadedFile);
+    setIsScanning(true);
+    setScanProgress(0);
+
+    const interval = setInterval(() => {
+      setScanProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            setIsScanning(false);
+            setRecentScans(prevScans => [
+              { id: Date.now(), name: uploadedFile.name, date: new Date().toISOString().split('T')[0], score: 88 },
+              ...prevScans
+            ]);
+            setActiveTab('analysis');
+          }, 600);
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 150);
+  };
 
   return (
-    <div className="flex h-screen w-full bg-[#f8fafc]">
-      <aside className="w-64 bg-white border-r border-gray-100 flex flex-col justify-between p-4">
+    <div className="flex h-screen w-full bg-[#f8fafc] font-sans">
+      <aside className="w-64 bg-white border-r border-gray-100 flex flex-col justify-between p-4 shrink-0">
         <div className="flex flex-col gap-y-6">
           <div className="flex items-center gap-2 px-2 py-3">
-            <div className="w-8 h-8 bg-[#10b981] rounded-lg flex items-center justify-center text-white font-bold text-xs">
+            <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
               R
             </div>
             <div>
               <h2 className="text-sm font-bold text-gray-800 leading-tight">ResumeAI Pro</h2>
-              <p className="text-[10px] text-[#10b981] font-semibold">AI Analysis Active</p>
+              <p className="text-[10px] text-emerald-600 font-semibold">AI Analysis Active</p>
             </div>
           </div>
 
@@ -25,7 +54,7 @@ function AnalyticDashboard() {
             <button 
               onClick={() => setActiveTab('dashboard')}
               className={`flex items-center gap-3 w-full px-4 py-2.5 text-sm font-medium rounded-xl transition-colors ${
-                activeTab === 'dashboard' ? 'bg-[#52ebb2] text-gray-900' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                activeTab === 'dashboard' ? 'bg-[#52ebb2]/20 text-[#006c49] font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
               }`}
             >
               <span>📊</span> Dashboard
@@ -33,7 +62,7 @@ function AnalyticDashboard() {
             <button 
               onClick={() => setActiveTab('upload')}
               className={`flex items-center gap-3 w-full px-4 py-2.5 text-sm font-medium rounded-xl transition-colors ${
-                activeTab === 'upload' ? 'bg-[#52ebb2] text-gray-900' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                activeTab === 'upload' ? 'bg-[#52ebb2]/20 text-[#006c49] font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
               }`}
             >
               <span>📁</span> Upload Resume
@@ -41,7 +70,7 @@ function AnalyticDashboard() {
             <button 
               onClick={() => setActiveTab('analysis')}
               className={`flex items-center gap-3 w-full px-4 py-2.5 text-sm font-medium rounded-xl transition-colors ${
-                activeTab === 'analysis' ? 'bg-[#52ebb2] text-gray-900' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                activeTab === 'analysis' ? 'bg-[#52ebb2]/20 text-[#006c49] font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
               }`}
             >
               <span>🔬</span> Analysis
@@ -49,7 +78,7 @@ function AnalyticDashboard() {
             <button 
               onClick={() => setActiveTab('history')}
               className={`flex items-center gap-3 w-full px-4 py-2.5 text-sm font-medium rounded-xl transition-colors ${
-                activeTab === 'history' ? 'bg-[#52ebb2] text-gray-900' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                activeTab === 'history' ? 'bg-[#52ebb2]/20 text-[#006c49] font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
               }`}
             >
               <span>📜</span> History
@@ -57,7 +86,7 @@ function AnalyticDashboard() {
             <button 
               onClick={() => setActiveTab('profile')}
               className={`flex items-center gap-3 w-full px-4 py-2.5 text-sm font-medium rounded-xl transition-colors ${
-                activeTab === 'profile' ? 'bg-[#52ebb2] text-gray-900' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                activeTab === 'profile' ? 'bg-[#52ebb2]/20 text-[#006c49] font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
               }`}
             >
               <span>👤</span> Profile
@@ -67,7 +96,7 @@ function AnalyticDashboard() {
 
         <div className="bg-[#111827] p-4 rounded-xl flex flex-col gap-3">
           <p className="text-xs text-gray-400 font-medium px-1">Reach full potential</p>
-          <button className="w-full bg-[#10b981] text-white text-sm font-semibold py-2.5 px-4 rounded-lg hover:bg-[#0fa673] transition-colors text-center">
+          <button className="w-full bg-emerald-600 text-white text-sm font-semibold py-2.5 px-4 rounded-lg hover:bg-emerald-700 transition-colors text-center">
             Upgrade to Pro
           </button>
         </div>
@@ -82,30 +111,71 @@ function AnalyticDashboard() {
                   Analytics Dashboard
                 </h1>
                 <p className="text-sm text-gray-500 mt-0.5">
-                  Welcome back, Alex. Your resume throughput is up 12% this week.
+                  Welcome back, Kaushik. Your resume performance score is in the top 10% this week.
                 </p>
               </header>
 
               <main className="px-8 py-6 flex flex-col gap-6">
-                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm max-w-sm">
-                  <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center text-[#10b981] mb-4">
-                    📈
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                    <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 mb-4 font-bold">
+                      📈
+                    </div>
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                      Avg Resume Score
+                    </p>
+                    <p className="text-3xl font-bold text-gray-900 mt-1">
+                      85/100
+                    </p>
                   </div>
-                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-                    Total Resumes Analyzed
-                  </p>
-                  <p className="text-3xl font-bold text-gray-900 mt-1">
-                    2,841
-                  </p>
+                  
+                  <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                    <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 mb-4 font-bold">
+                      📁
+                    </div>
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                      Resumes Checked
+                    </p>
+                    <p className="text-3xl font-bold text-gray-900 mt-1">
+                      {recentScans.length}
+                    </p>
+                  </div>
+
+                  <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                    <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 mb-4 font-bold">
+                      ⚡
+                    </div>
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                      AI Credits Remaining
+                    </p>
+                    <p className="text-3xl font-bold text-gray-900 mt-1">
+                      48/50
+                    </p>
+                  </div>
                 </div>
 
                 <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                  <h3 className="text-md font-bold text-gray-800 mb-4">Recent History</h3>
-                  <div className="w-full border-t border-gray-100 pt-4">
-                    <div className="flex justify-between text-xs font-semibold text-gray-400 uppercase tracking-wider px-2">
+                  <h3 className="text-md font-bold text-gray-800 mb-4">Recent Scan History</h3>
+                  <div className="w-full border-t border-gray-100 pt-4 flex flex-col gap-3">
+                    <div className="flex justify-between text-xs font-semibold text-gray-400 uppercase tracking-wider px-2 pb-2">
                       <span>File Name</span>
-                      <span>Date</span>
+                      <div className="flex gap-16">
+                        <span>Date</span>
+                        <span className="w-12 text-right">Score</span>
+                      </div>
                     </div>
+                    {recentScans.map((scan) => (
+                      <div key={scan.id} className="flex justify-between items-center text-sm text-gray-700 px-2 py-3 hover:bg-slate-50 rounded-lg transition-colors">
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-emerald-600" />
+                          <span className="font-medium text-gray-900">{scan.name}</span>
+                        </div>
+                        <div className="flex gap-16 items-center">
+                          <span className="text-gray-400 text-xs">{scan.date}</span>
+                          <span className="w-12 text-right font-bold text-emerald-600">{scan.score}/100</span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </main>
@@ -136,21 +206,31 @@ function AnalyticDashboard() {
                   </p>
                 </div>
 
-                <div className="bg-white w-full p-16 rounded-2xl border-2 border-dashed border-gray-200 hover:border-emerald-400 transition-colors flex flex-col items-center justify-center text-center max-w-3xl cursor-pointer shadow-sm group">
-                  <div className="w-16 h-16 bg-[#52ebb2]/20 text-[#006c49] rounded-full flex items-center justify-center mb-5 transition-transform group-hover:scale-110">
-                    <span className="text-2xl">📤</span>
+                {isScanning ? (
+                  <div className="bg-white w-full p-16 rounded-2xl border-2 border-emerald-200 flex flex-col items-center justify-center text-center max-w-3xl shadow-sm">
+                    <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mb-5 animate-spin border-4 border-emerald-600 border-t-transparent"></div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">Analyzing Resume...</h3>
+                    <div className="w-64 bg-gray-100 rounded-full h-2.5 mb-2 overflow-hidden">
+                      <div className="bg-emerald-600 h-2.5 rounded-full transition-all duration-150" style={{ width: `${scanProgress}%` }}></div>
+                    </div>
+                    <p className="text-xs text-gray-400 font-medium">Step: Parsing text structures & scoring matching keywords</p>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-1">
-                    Drop your resume here or <span className="text-emerald-600 underline">click to browse</span>
-                  </h3>
-                  <p className="text-xs text-gray-400 font-medium">.PDF, .DOCX up to 5MB supported</p>
-                </div>
+                ) : (
+                  <label className="bg-white w-full p-16 rounded-2xl border-2 border-dashed border-gray-200 hover:border-emerald-400 transition-colors flex flex-col items-center justify-center text-center max-w-3xl cursor-pointer shadow-sm group">
+                    <input type="file" accept=".pdf,.docx" className="hidden" onChange={handleFileUpload} />
+                    <div className="w-16 h-16 bg-[#52ebb2]/20 text-[#006c49] rounded-full flex items-center justify-center mb-5 transition-transform group-hover:scale-110">
+                      <span className="text-2xl">📤</span>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-1">
+                      Drop your resume here or <span className="text-emerald-600 underline">click to browse</span>
+                    </h3>
+                    <p className="text-xs text-gray-400 font-medium">.PDF, .DOCX up to 5MB supported</p>
+                  </label>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-3xl mt-12">
                   <div className="bg-white border border-gray-100 p-5 rounded-xl shadow-sm">
-                    <div className="w-8 h-8 bg-slate-900 rounded-lg text-white flex items-center justify-center mb-3 text-sm">
-                      🎯
-                  </div>
+                    <div className="w-8 h-8 bg-slate-900 rounded-lg text-white flex items-center justify-center mb-3 text-sm">🎯</div>
                     <h4 className="text-xs font-bold text-gray-900 mb-1">ATS Score Optimization</h4>
                     <p className="text-[11px] text-gray-500 leading-normal">
                       See how well your resume matches against industry-standard tracking systems.
@@ -158,9 +238,7 @@ function AnalyticDashboard() {
                   </div>
 
                   <div className="bg-white border border-gray-100 p-5 rounded-xl shadow-sm">
-                    <div className="w-8 h-8 bg-emerald-100 rounded-lg text-emerald-700 flex items-center justify-center mb-3 text-sm">
-                      💡
-                  </div>
+                    <div className="w-8 h-8 bg-emerald-100 rounded-lg text-emerald-700 flex items-center justify-center mb-3 text-sm">💡</div>
                     <h4 className="text-xs font-bold text-gray-900 mb-1">Skill Gap Analysis</h4>
                     <p className="text-[11px] text-gray-500 leading-normal">
                       AI identifies missing keywords and suggests skills to enhance your profile.
@@ -168,9 +246,7 @@ function AnalyticDashboard() {
                   </div>
 
                   <div className="bg-white border border-gray-100 p-5 rounded-xl shadow-sm">
-                    <div className="w-8 h-8 bg-indigo-100 rounded-lg text-indigo-700 flex items-center justify-center mb-3 text-sm">
-                      ✨
-                  </div>
+                    <div className="w-8 h-8 bg-indigo-100 rounded-lg text-indigo-700 flex items-center justify-center mb-3 text-sm">✨</div>
                     <h4 className="text-xs font-bold text-gray-900 mb-1">Formatting Correction</h4>
                     <p className="text-[11px] text-gray-500 leading-normal">
                       Detect visual errors, inconsistent spacing, and font issues instantly.
@@ -191,9 +267,54 @@ function AnalyticDashboard() {
                   Detailed breakdowns and score optimization targets.
                 </p>
               </header>
-              <main className="px-8 py-6">
-                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                  <p className="text-gray-600 text-sm">No recent analysis records found. Upload a resume to scan insights.</p>
+              <main className="px-8 py-6 max-w-5xl">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                  
+                  <div className="lg:col-span-4 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center">
+                    <div className="relative w-36 h-36 flex items-center justify-center mb-4">
+                      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 192 192">
+                        <circle className="text-gray-100" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" strokeWidth="10"></circle>
+                        <circle className="text-emerald-600" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" strokeWidth="10" strokeDasharray="502" strokeDashoffset="75"></circle>
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <span className="text-4xl font-extrabold text-gray-900">85</span>
+                        <span className="text-[10px] font-bold text-gray-400 tracking-wider">AI SCORE</span>
+                      </div>
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-800">Highly Competitive</h3>
+                    <p className="text-xs text-gray-400 mt-1 max-w-[200px]">Your resume scores higher than 85% of other applicants in Frontend positions.</p>
+                  </div>
+
+                  <div className="lg:col-span-8 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-md font-bold text-gray-900 mb-4">Key Improvement Targets</h3>
+                      <div className="space-y-4">
+                        <div className="flex gap-3 items-start p-3 bg-red-50/50 rounded-xl border border-red-100">
+                          <AlertTriangle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                          <div>
+                            <h4 className="text-xs font-bold text-red-900">Missing Key Technologies</h4>
+                            <p className="text-[11px] text-red-700 mt-0.5">Missing references to Kubernetes, Redux Toolkit, and AWS S3 which are highly desired for your target roles.</p>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-3 items-start p-3 bg-emerald-50/50 rounded-xl border border-emerald-100">
+                          <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                          <div>
+                            <h4 className="text-xs font-bold text-emerald-900">Great Action-Oriented Verbs</h4>
+                            <p className="text-[11px] text-emerald-700 mt-0.5">Strong usage of action words like "Architected", "Spearheaded", and "Leveraged" across your work history.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button 
+                      onClick={() => setActiveTab('upload')} 
+                      className="mt-6 w-full py-3 bg-gray-900 hover:bg-gray-800 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2"
+                    >
+                      Scan Another Resume <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+
                 </div>
               </main>
             </>
@@ -210,8 +331,21 @@ function AnalyticDashboard() {
                 </p>
               </header>
               <main className="px-8 py-6">
-                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                  <p className="text-gray-600 text-sm">Your past optimization tasks history is clear.</p>
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 max-w-3xl">
+                  <div className="flex flex-col gap-3">
+                    {recentScans.map((scan) => (
+                      <div key={scan.id} className="flex justify-between items-center text-sm text-gray-700 py-3 border-b border-gray-50 last:border-0">
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-emerald-600" />
+                          <span className="font-semibold text-gray-900">{scan.name}</span>
+                        </div>
+                        <div className="flex items-center gap-6">
+                          <span className="text-gray-400 text-xs">{scan.date}</span>
+                          <span className="font-extrabold text-emerald-600">{scan.score}/100</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </main>
             </>
@@ -228,15 +362,30 @@ function AnalyticDashboard() {
                 </p>
               </header>
               <main className="px-8 py-6">
-                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                  <p className="text-gray-600 text-sm">Account managed profile configs under development.</p>
+                <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm max-w-2xl">
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-sm font-bold text-gray-900 mb-1">Kaushik Kaush</h3>
+                      <p className="text-xs text-gray-500">kaushik@resumeai.com</p>
+                    </div>
+                    <div className="border-t border-gray-100 pt-6">
+                      <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-3">Subscription Details</h4>
+                      <div className="flex items-center justify-between bg-slate-50 p-4 rounded-xl">
+                        <div>
+                          <p className="text-xs font-bold text-gray-900">ResumeAI Free tier</p>
+                          <p className="text-[10px] text-gray-400 mt-0.5">Upgrade for unlimited scans and AI tailoring.</p>
+                        </div>
+                        <button className="px-4 py-2 bg-emerald-600 text-white font-bold text-xs rounded-lg hover:bg-emerald-700">Upgrade</button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </main>
             </>
           )}
         </div>
 
-        <footer className="w-full py-6 px-8 flex justify-between items-center bg-transparent border-t border-gray-100 mt-auto">
+        <footer className="w-full py-6 px-8 flex justify-between items-center bg-transparent border-t border-gray-100 mt-auto shrink-0">
           <div className="text-sm font-bold text-gray-900">
             ResumeAI
           </div>
