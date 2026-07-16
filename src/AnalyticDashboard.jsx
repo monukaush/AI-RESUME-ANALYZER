@@ -10,30 +10,58 @@ function AnalyticDashboard() {
     { id: 1, name: "Kaushik_Resume_Backend.pdf", date: "2026-07-14", score: 85 },
     { id: 2, name: "Kaushik_Resume_V2.pdf", date: "2026-07-10", score: 79 }
   ]);
+  const [analysisReport, setAnalysisReport] = useState({
+    score: 85,
+    missingKeywords: ["Kubernetes", "Redux Toolkit", "AWS S3"],
+    strengths: ["Architected", "Spearheaded", "Leveraged"]
+  });
 
-  const handleFileUpload = (e) => {
-    const uploadedFile = e.target.files?.[0] || { name: 'Uploaded_Resume.pdf' };
+  const handleFileUpload = async (e) => {
+    const uploadedFile = e.target.files?.[0];
+    if (!uploadedFile) return;
+
     setFile(uploadedFile);
     setIsScanning(true);
-    setScanProgress(0);
+    setScanProgress(15);
 
-    const interval = setInterval(() => {
-      setScanProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setIsScanning(false);
-            setRecentScans(prevScans => [
-              { id: Date.now(), name: uploadedFile.name, date: new Date().toISOString().split('T')[0], score: 88 },
-              ...prevScans
-            ]);
-            setActiveTab('analysis');
-          }, 600);
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 150);
+    const formData = new FormData();
+    formData.append('resume', uploadedFile);
+
+    try {
+      setScanProgress(45);
+    const response = await fetch('http://localhost:8000/api/analyze/', {
+  method: 'POST',
+  body: formData,
+});
+      
+      setScanProgress(85);
+      const data = await response.json();
+      
+      if (response.ok) {
+        setAnalysisReport({
+          score: data.score,
+          missingKeywords: data.missingKeywords || [],
+          strengths: data.strengths || []
+        });
+
+        setRecentScans(prevScans => [
+          { id: Date.now(), name: uploadedFile.name, date: new Date().toISOString().split('T')[0], score: data.score },
+          ...prevScans
+        ]);
+        
+        setScanProgress(100);
+        setTimeout(() => {
+          setIsScanning(false);
+          setActiveTab('analysis');
+        }, 400);
+      } else {
+        setIsScanning(false);
+        alert(data.error || "Analysis failed");
+      }
+    } catch (error) {
+      setIsScanning(false);
+      alert("Backend server connection failed");
+    }
   };
 
   return (
@@ -213,46 +241,20 @@ function AnalyticDashboard() {
                     <div className="w-64 bg-gray-100 rounded-full h-2.5 mb-2 overflow-hidden">
                       <div className="bg-emerald-600 h-2.5 rounded-full transition-all duration-150" style={{ width: `${scanProgress}%` }}></div>
                     </div>
-                    <p className="text-xs text-gray-400 font-medium">Step: Parsing text structures & scoring matching keywords</p>
+                    <p className="text-xs text-gray-400 font-medium">Step: Sending text payload to Django AI parser engine</p>
                   </div>
                 ) : (
                   <label className="bg-white w-full p-16 rounded-2xl border-2 border-dashed border-gray-200 hover:border-emerald-400 transition-colors flex flex-col items-center justify-center text-center max-w-3xl cursor-pointer shadow-sm group">
-                    <input type="file" accept=".pdf,.docx" className="hidden" onChange={handleFileUpload} />
+                    <input type="file" accept=".pdf" className="hidden" onChange={handleFileUpload} />
                     <div className="w-16 h-16 bg-[#52ebb2]/20 text-[#006c49] rounded-full flex items-center justify-center mb-5 transition-transform group-hover:scale-110">
                       <span className="text-2xl">📤</span>
                     </div>
                     <h3 className="text-xl font-bold text-gray-800 mb-1">
                       Drop your resume here or <span className="text-emerald-600 underline">click to browse</span>
                     </h3>
-                    <p className="text-xs text-gray-400 font-medium">.PDF, .DOCX up to 5MB supported</p>
+                    <p className="text-xs text-gray-400 font-medium">.PDF up to 5MB supported</p>
                   </label>
                 )}
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-3xl mt-12">
-                  <div className="bg-white border border-gray-100 p-5 rounded-xl shadow-sm">
-                    <div className="w-8 h-8 bg-slate-900 rounded-lg text-white flex items-center justify-center mb-3 text-sm">🎯</div>
-                    <h4 className="text-xs font-bold text-gray-900 mb-1">ATS Score Optimization</h4>
-                    <p className="text-[11px] text-gray-500 leading-normal">
-                      See how well your resume matches against industry-standard tracking systems.
-                    </p>
-                  </div>
-
-                  <div className="bg-white border border-gray-100 p-5 rounded-xl shadow-sm">
-                    <div className="w-8 h-8 bg-emerald-100 rounded-lg text-emerald-700 flex items-center justify-center mb-3 text-sm">💡</div>
-                    <h4 className="text-xs font-bold text-gray-900 mb-1">Skill Gap Analysis</h4>
-                    <p className="text-[11px] text-gray-500 leading-normal">
-                      AI identifies missing keywords and suggests skills to enhance your profile.
-                    </p>
-                  </div>
-
-                  <div className="bg-white border border-gray-100 p-5 rounded-xl shadow-sm">
-                    <div className="w-8 h-8 bg-indigo-100 rounded-lg text-indigo-700 flex items-center justify-center mb-3 text-sm">✨</div>
-                    <h4 className="text-xs font-bold text-gray-900 mb-1">Formatting Correction</h4>
-                    <p className="text-[11px] text-gray-500 leading-normal">
-                      Detect visual errors, inconsistent spacing, and font issues instantly.
-                    </p>
-                  </div>
-                </div>
               </main>
             </>
           )}
@@ -274,15 +276,16 @@ function AnalyticDashboard() {
                     <div className="relative w-36 h-36 flex items-center justify-center mb-4">
                       <svg className="w-full h-full transform -rotate-90" viewBox="0 0 192 192">
                         <circle className="text-gray-100" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" strokeWidth="10"></circle>
-                        <circle className="text-emerald-600" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" strokeWidth="10" strokeDasharray="502" strokeDashoffset="75"></circle>
+                        <circle className="text-emerald-600" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" strokeWidth="10" strokeDasharray="502" style={{ strokeDashoffset: 502 - (502 * analysisReport.score) / 100 }}></circle>
                       </svg>
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-4xl font-extrabold text-gray-900">85</span>
+                        <span className="text-4xl font-extrabold text-gray-900">{analysisReport.score}</span>
                         <span className="text-[10px] font-bold text-gray-400 tracking-wider">AI SCORE</span>
                       </div>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-800">Highly Competitive</h3>
-                    <p className="text-xs text-gray-400 mt-1 max-w-[200px]">Your resume scores higher than 85% of other applicants in Frontend positions.</p>
+                    <h3 className="text-lg font-bold text-gray-800">
+                      {analysisReport.score >= 80 ? 'Highly Competitive' : analysisReport.score >= 60 ? 'Average Fit' : 'Needs Optimization'}
+                    </h3>
                   </div>
 
                   <div className="lg:col-span-8 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between">
@@ -293,7 +296,9 @@ function AnalyticDashboard() {
                           <AlertTriangle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
                           <div>
                             <h4 className="text-xs font-bold text-red-900">Missing Key Technologies</h4>
-                            <p className="text-[11px] text-red-700 mt-0.5">Missing references to Kubernetes, Redux Toolkit, and AWS S3 which are highly desired for your target roles.</p>
+                            <p className="text-[11px] text-red-700 mt-0.5">
+                              {analysisReport.missingKeywords.length > 0 ? analysisReport.missingKeywords.join(', ') : 'None missing'}
+                            </p>
                           </div>
                         </div>
 
@@ -301,7 +306,9 @@ function AnalyticDashboard() {
                           <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                           <div>
                             <h4 className="text-xs font-bold text-emerald-900">Great Action-Oriented Verbs</h4>
-                            <p className="text-[11px] text-emerald-700 mt-0.5">Strong usage of action words like "Architected", "Spearheaded", and "Leveraged" across your work history.</p>
+                            <p className="text-[11px] text-emerald-700 mt-0.5">
+                              {analysisReport.strengths.length > 0 ? analysisReport.strengths.join(', ') : 'No strengths found'}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -368,16 +375,6 @@ function AnalyticDashboard() {
                       <h3 className="text-sm font-bold text-gray-900 mb-1">Kaushik Kaush</h3>
                       <p className="text-xs text-gray-500">kaushik@resumeai.com</p>
                     </div>
-                    <div className="border-t border-gray-100 pt-6">
-                      <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-3">Subscription Details</h4>
-                      <div className="flex items-center justify-between bg-slate-50 p-4 rounded-xl">
-                        <div>
-                          <p className="text-xs font-bold text-gray-900">ResumeAI Free tier</p>
-                          <p className="text-[10px] text-gray-400 mt-0.5">Upgrade for unlimited scans and AI tailoring.</p>
-                        </div>
-                        <button className="px-4 py-2 bg-emerald-600 text-white font-bold text-xs rounded-lg hover:bg-emerald-700">Upgrade</button>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </main>
@@ -392,11 +389,6 @@ function AnalyticDashboard() {
           <p className="text-xs text-gray-400">
             © {new Date().getFullYear()} ResumeAI Analysis. All rights reserved.
           </p>
-          <div className="flex gap-6 text-xs text-gray-500">
-            <a className="hover:text-emerald-600 transition-colors" href="#privacy">Privacy Policy</a>
-            <a className="hover:text-emerald-600 transition-colors" href="#terms">Terms of Service</a>
-            <a className="hover:text-emerald-600 transition-colors" href="#contact">Contact</a>
-          </div>
         </footer>
       </div>
     </div>

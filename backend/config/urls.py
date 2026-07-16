@@ -1,11 +1,7 @@
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import path, include
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-
-    path(
-        "api/analyzer/",
-        include("analyzer.urls"),
-    ),
+    path('admin/', admin.site.name if hasattr(admin.site, 'name') else admin.site.urls),
+    path('api/', include('analyzer.urls')), 
 ]
