@@ -5,6 +5,7 @@ import Register from './Register';
 import Login from './Login';
 import NavBar from './NavBar';
 import AnalyticDashboard from './AnalyticDashboard';
+import Profile from "./Profile";
 
 function App() {
   return (

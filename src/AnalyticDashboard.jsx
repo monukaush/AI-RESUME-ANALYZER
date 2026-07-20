@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowUpRight, CheckCircle, AlertTriangle, HelpCircle, FileText, ArrowRight } from 'lucide-react';
+import Profile from './Profile';
 
 function AnalyticDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -29,10 +30,10 @@ function AnalyticDashboard() {
 
     try {
       setScanProgress(45);
-    const response = await fetch('http://localhost:8000/api/analyze/', {
-  method: 'POST',
-  body: formData,
-});
+      const response = await fetch('http://localhost:8000/analyze/', {
+        method: 'POST',
+        body: formData,
+      });
       
       setScanProgress(85);
       const data = await response.json();
@@ -64,7 +65,7 @@ function AnalyticDashboard() {
     }
   };
 
-  return (
+  return ( 
     <div className="flex h-screen w-full bg-[#f8fafc] font-sans">
       <aside className="w-64 bg-white border-r border-gray-100 flex flex-col justify-between p-4 shrink-0">
         <div className="flex flex-col gap-y-6">
@@ -337,18 +338,29 @@ function AnalyticDashboard() {
                   Review all your previously evaluated application profiles.
                 </p>
               </header>
+
               <main className="px-8 py-6">
                 <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 max-w-3xl">
                   <div className="flex flex-col gap-3">
                     {recentScans.map((scan) => (
-                      <div key={scan.id} className="flex justify-between items-center text-sm text-gray-700 py-3 border-b border-gray-50 last:border-0">
+                      <div
+                        key={scan.id}
+                        className="flex justify-between items-center text-sm text-gray-700 py-3 border-b border-gray-50 last:border-0"
+                      >
                         <div className="flex items-center gap-2">
                           <FileText className="w-4 h-4 text-emerald-600" />
-                          <span className="font-semibold text-gray-900">{scan.name}</span>
+                          <span className="font-semibold text-gray-900">
+                            {scan.name}
+                          </span>
                         </div>
+
                         <div className="flex items-center gap-6">
-                          <span className="text-gray-400 text-xs">{scan.date}</span>
-                          <span className="font-extrabold text-emerald-600">{scan.score}/100</span>
+                          <span className="text-gray-400 text-xs">
+                            {scan.date}
+                          </span>
+                          <span className="font-extrabold text-emerald-600">
+                            {scan.score}/100
+                          </span>
                         </div>
                       </div>
                     ))}
@@ -358,38 +370,12 @@ function AnalyticDashboard() {
             </>
           )}
 
-          {activeTab === 'profile' && (
-            <>
-              <header className="px-8 pt-6 pb-4">
-                <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-                  Account Settings
-                </h1>
-                <p className="text-sm text-gray-500 mt-0.5">
-                  Manage configuration metrics, tokens, and active session limits.
-                </p>
-              </header>
-              <main className="px-8 py-6">
-                <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm max-w-2xl">
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-1">Kaushik Kaush</h3>
-                      <p className="text-xs text-gray-500">kaushik@resumeai.com</p>
-                    </div>
-                  </div>
-                </div>
-              </main>
-            </>
+          {activeTab === "profile" && (
+            <div className="px-8 py-6 max-w-3xl">
+              <Profile />
+            </div>
           )}
         </div>
-
-        <footer className="w-full py-6 px-8 flex justify-between items-center bg-transparent border-t border-gray-100 mt-auto shrink-0">
-          <div className="text-sm font-bold text-gray-900">
-            ResumeAI
-          </div>
-          <p className="text-xs text-gray-400">
-            © {new Date().getFullYear()} ResumeAI Analysis. All rights reserved.
-          </p>
-        </footer>
       </div>
     </div>
   );
