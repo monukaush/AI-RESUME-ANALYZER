@@ -7,16 +7,41 @@ function Register() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      setError("Passwords do not match!");
       return;
     }
-    if (name && email && password) {
-      navigate('/dashboard');
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          confirm_password: confirmPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        navigate('/dashboard');
+      } else {
+        setError(data.error || 'Registration failed.');
+      }
+    } catch (err) {
+      setError('Server connection error. Please try again.');
     }
   };
 
@@ -27,6 +52,12 @@ function Register() {
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Create Account</h1>
           <p className="text-sm text-gray-500 mt-1">Start optimizing your resume with AI.</p>
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+            {error}
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-3 mb-6">
           <button type="button" className="flex items-center justify-center gap-2 border border-gray-200 rounded-xl py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">

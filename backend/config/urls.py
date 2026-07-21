@@ -1,9 +1,6 @@
-from django.contrib import admin
-from django.urls import path, include
-from analyzer.views import home
+from django.urls import path
+from .views import register_user
 
 urlpatterns = [
-    path("", home),
-    path("admin/", admin.site.urls),
-    path("api/", include("analyzer.urls")),
+    path('api/register/', register_user, name='register'),
 ]
