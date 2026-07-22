@@ -5,14 +5,36 @@ function Login({ onLoginSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email && password) {
-      if (onLoginSuccess) {
-        onLoginSuccess();
+    setError('');
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('userEmail', data.email);
+        localStorage.setItem('userName', data.name);
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
+        navigate('/dashboard');
+      } else {
+        setError(data.error || 'Login failed.');
       }
-      navigate('/dashboard');
+    } catch (err) {
+      setError('Server connection error. Please try again.');
     }
   };
 
@@ -23,6 +45,12 @@ function Login({ onLoginSuccess }) {
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Welcome Back</h1>
           <p className="text-sm text-gray-500 mt-1">Sign in to your ResumeAI account to continue.</p>
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+            {error}
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-3 mb-6">
           <button type="button" className="flex items-center justify-center gap-2 border border-gray-200 rounded-xl py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">

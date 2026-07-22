@@ -36,6 +36,8 @@ function Register() {
       const data = await response.json();
 
       if (response.ok) {
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userName', name);
         navigate('/dashboard');
       } else {
         setError(data.error || 'Registration failed.');

@@ -34,3 +34,26 @@ def register_user(request):
     )
 
     return Response({'message': 'User registered successfully.'}, status=status.HTTP_201_CREATED)
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login_user(request):
+    data = request.data
+    email = data.get('email')
+    password = data.get('password')
+
+    if not email or not password:
+        return Response({'error': 'Email and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user = User.objects.get(email=email)
+        if user.check_password(password):
+            return Response({
+                'message': 'Login successful.',
+                'email': user.email,
+                'name': f"{user.first_name} {user.last_name}".strip()
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Invalid credentials.'}, status=status.HTTP_400_BAD_REQUEST)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found.'}, status=status.HTTP_400_BAD_REQUEST)
