@@ -131,10 +131,7 @@ TEMPLATES = [
 
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.getenv(
-            "LOCAL_DATABASE_URL",
-            "postgres://postgres:YOUR_PASSWORD@localhost:5432/ai_resume_db",
-        ),
+        default=os.getenv("DATABASE_URL"),
         conn_max_age=600,
     )
 }
