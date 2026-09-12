@@ -1,0 +1,269 @@
+import os
+import dj_database_url
+
+from pathlib import Path
+from datetime import timedelta
+from dotenv import load_dotenv
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env
+load_dotenv(BASE_DIR / ".env")
+
+
+# =========================
+# SECURITY
+# =========================
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+]
+
+
+# =========================
+# CORS
+# =========================
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+# =========================
+# INSTALLED APPS
+# =========================
+
+INSTALLED_APPS = [
+    "corsheaders",
+
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.sites",
+
+    "rest_framework",
+
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+
+    "allauth.socialaccount.providers.openid_connect",
+
+    "analyzer",
+]
+
+
+# =========================
+# MIDDLEWARE
+# =========================
+
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+
+    "corsheaders.middleware.CorsMiddleware",
+
+    "django.middleware.common.CommonMiddleware",
+
+    "django.contrib.sessions.middleware.SessionMiddleware",
+
+    "django.middleware.csrf.CsrfViewMiddleware",
+
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+
+    "allauth.account.middleware.AccountMiddleware",
+
+    "django.contrib.messages.middleware.MessageMiddleware",
+
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+
+# =========================
+# URL / WSGI
+# =========================
+
+ROOT_URLCONF = "config.urls"
+
+WSGI_APPLICATION = "config.wsgi.application"
+
+
+# =========================
+# TEMPLATES
+# =========================
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+
+# =========================
+# DATABASE
+# =========================
+
+DATABASES = {
+    "default": dj_database_url.config(
+        default=os.getenv(
+            "LOCAL_DATABASE_URL",
+            "postgres://postgres:YOUR_PASSWORD@localhost:5432/ai_resume_db",
+        ),
+        conn_max_age=600,
+    )
+}
+
+
+# =========================
+# PASSWORD VALIDATION
+# =========================
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME":
+        "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME":
+        "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME":
+        "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME":
+        "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
+
+
+# =========================
+# INTERNATIONALIZATION
+# =========================
+
+LANGUAGE_CODE = "en-us"
+
+TIME_ZONE = "UTC"
+
+USE_I18N = True
+
+USE_TZ = True
+
+
+# =========================
+# STATIC & MEDIA
+# =========================
+
+STATIC_URL = "static/"
+
+MEDIA_URL = "/media/"
+
+MEDIA_ROOT = BASE_DIR / "media"
+
+
+# =========================
+# DJANGO REST FRAMEWORK
+# =========================
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+
+# =========================
+# DJANGO SITES
+# =========================
+
+SITE_ID = 1
+
+
+# =========================
+# AUTHENTICATION
+# =========================
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+
+# =========================
+# LINKEDIN
+# =========================
+
+SOCIALACCOUNT_PROVIDERS = {
+    "openid_connect": {
+        "APPS": [
+            {
+                "provider_id": "linkedin",
+                "name": "LinkedIn",
+                "client_id": os.getenv("LINKEDIN_CLIENT_ID"),
+                "secret": os.getenv("LINKEDIN_CLIENT_SECRET"),
+
+                "settings": {
+                    "server_url": "https://www.linkedin.com/oauth",
+                },
+            },
+        ],
+    },
+}
+
+
+# =========================
+# JWT
+# =========================
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
+
+# =========================
+# ALLAUTH
+# =========================
+
+ACCOUNT_LOGIN_METHODS = {"email"}
+
+ACCOUNT_SIGNUP_FIELDS = [
+    "email*",
+    "password1*",
+]
+
+
+# =========================
+# REDIRECTS
+# =========================
+
+LOGIN_REDIRECT_URL = "http://localhost:5173/dashboard"
+
+LOGOUT_REDIRECT_URL = "http://localhost:5173/login"
