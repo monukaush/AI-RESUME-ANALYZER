@@ -24,8 +24,8 @@ DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
+    "ai-resume-analyzer-omix.vercel.app",
 ]
-
 
 # =========================
 # CORS
@@ -36,6 +36,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://ai-resume-analyzer-nine-rust.vercel.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
