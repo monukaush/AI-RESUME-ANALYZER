@@ -24,7 +24,7 @@ DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
-    "ai-resume-analyzer-omix.vercel.app",
+    ".vercel.app",
 ]
 
 # =========================
